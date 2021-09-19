@@ -5,12 +5,12 @@ import NewMessage from './NewMessage'
 
 
 export default function Messages() {
-  const {state} = useContext(UserContext)
   const messagesEndRef = useRef(null)
-  const {dispatch} = useContext(UserContext);
+  const {state, addMessage} = useContext(UserContext);
 
   const messages = Object.keys(state).map(message => {
-    if (state[message]['sent'] === "Anton") {
+    console.log(state[message])
+    if (state[message]['user_id'] === 2) {
       return (
         <div 
           className="message message-personal"
@@ -42,11 +42,11 @@ export default function Messages() {
 
   const submitMessage = (e, msg) => {
     //Remove me later
-    const names = ["Anton", "James", "Doug", "Jane"]
+    const names = [1, 2, 3, 4]
     const pickName = names[Math.floor(Math.random() * 4)]
 
     if (msg !== 0){
-      dispatch({type: 'newmessage', values : { msg: msg, sent: pickName, date: Date.now()}})
+      addMessage({type: 'newmessage', values : { msg: msg, sent: pickName, date: Date.now()}})
     }
   }
 

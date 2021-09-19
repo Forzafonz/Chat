@@ -1,10 +1,11 @@
 import './App.css';
 import Chat from './Components/Chat';
-import React, { useReducer } from 'react';
+import React, { useReducer, useEffect } from 'react';
 import { UserContext } from './hooks/userContext';
-
+import axios from 'axios';
 
 const NEWMESSAGE = 'newmessage'
+const INITIALIZE = 'initialize'
 
 function reducer(state, action){
 
@@ -14,8 +15,22 @@ function reducer(state, action){
     return updateState
   }
 
+  const initialize = (input) => {
+    const newState = {};
+
+    input.forEach(element => {
+      console.log(element)
+      const date = Number(element.date);
+      newState[date] = {msg: element.text, date: date, user_id : element.user_id}
+    });
+    console.log("State:", newState)
+    return newState;
+
+  }
+
   const actions = {
-    [NEWMESSAGE] : newMessage
+    [NEWMESSAGE] : newMessage,
+    [INITIALIZE] : initialize
   }
 
   return actions[action.type](action.values);
@@ -25,8 +40,28 @@ function reducer(state, action){
 function App() {
   const initialState = { 0 : { msg: "Hello", sent: "Anton", date: Date.now()}}
   const [state, dispatch] = useReducer(reducer, initialState)
+
+  useEffect(() => {
+    axios.get('/api/messages')
+    .then((data) => {
+      dispatch({ type: "initialize", values: data.data})
+    })
+  
+  },[])
+  
+  const addMessage = (message) => {
+    console.log("This is message:", message)
+    return axios.put('/api/messages/new', {message})
+    .then((result) => {
+      console.log(result)
+      dispatch(message)
+    })
+    .catch((error) => console.log(error.response.data))
+  }
+
+
   return (
-  <UserContext.Provider value = {{state, dispatch}}>
+  <UserContext.Provider value = {{state, dispatch, addMessage}}>
     <Chat />
    </UserContext.Provider>
   );
