@@ -45,7 +45,7 @@ export default function Messages() {
     const pickName = names[Math.floor(Math.random() * 4)]
 
     if (msg !== 0){
-      addMessage({type: 'newmessage', values : { msg: msg, sent: pickName, date: Date.now()}})
+      addMessage({type: 'newmessage', values : { msg: msg, user_id: pickName, date: Date.now()}})
     }
   }
 

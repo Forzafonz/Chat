@@ -17,7 +17,6 @@ function reducer(state, action){
 
   const initialize = (input) => {
     const newState = {};
-
     input.forEach(element => {
 
       const date = Number(element.date);
