@@ -11,7 +11,7 @@ function reducer(state, action){
 
   const newMessage = (input) => {
     const newState = {...state}
-    const updateState = {...newState, [Date.now()] : input}
+    const updateState = {...newState, [input.date] : input}
     return updateState
   }
 
@@ -19,11 +19,10 @@ function reducer(state, action){
     const newState = {};
 
     input.forEach(element => {
-      console.log(element)
+
       const date = Number(element.date);
       newState[date] = {msg: element.text, date: date, user_id : element.user_id}
     });
-    console.log("State:", newState)
     return newState;
 
   }
@@ -49,11 +48,28 @@ function App() {
   
   },[])
   
+  useEffect(() => {
+
+    const ws = new WebSocket("ws://localhost:8000", "JSON")
+
+    ws.onmessage = function (event) {
+      console.log("Here is data: ", event.data)
+      const data = JSON.parse(event.data)
+      if(data.type === "UPDATE_CHAT") {
+        const {msg} = data;
+        console.log("My message:", msg)
+        dispatch({ type : NEWMESSAGE, values : msg})
+      }
+    }
+
+    return () => ws.close();
+
+  }, [])
+
+
   const addMessage = (message) => {
-    console.log("This is message:", message)
     return axios.put('/api/messages/new', {message})
     .then((result) => {
-      console.log(result)
       dispatch(message)
     })
     .catch((error) => console.log(error.response.data))

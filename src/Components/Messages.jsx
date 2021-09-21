@@ -9,7 +9,6 @@ export default function Messages() {
   const {state, addMessage} = useContext(UserContext);
 
   const messages = Object.keys(state).map(message => {
-    console.log(state[message])
     if (state[message]['user_id'] === 2) {
       return (
         <div 
@@ -32,7 +31,7 @@ export default function Messages() {
   //Sort messages by date:
 
   const sortedMessages = messages.sort((firstElem, secondElem) => {
-    console.log(firstElem.key)
+
     if (firstElem.key > secondElem.key){
       return 1
     } else {
